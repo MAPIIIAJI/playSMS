@@ -24,7 +24,10 @@ if (_OP_ == 'login') {
 		
 		if ($validated) {
 			$uid = user_username2uid($username);
+			
+			// setup new session after successful login
 			auth_session_setup($uid);
+			
 			if (auth_isvalid()) {
 				_log("u:" . $_SESSION['username'] . " uid:" . $uid . " status:" . $_SESSION['status'] . " sid:" . $_SESSION['sid'] . " ip:" . $_SERVER['REMOTE_ADDR'], 2, "login");
 			} else {
@@ -49,6 +52,10 @@ if (_OP_ == 'login') {
 			$show_web_title = FALSE;
 		}
 	}
+
+	$lastpost = array(
+		'username' => _lastpost('username')
+	);
 	
 	unset($tpl);
 	$tpl = array(
@@ -72,6 +79,9 @@ if (_OP_ == 'login') {
 			'enable_forgot' => $core_config['main']['enable_forgot'],
 			'enable_logo' => $enable_logo,
 			'show_web_title' => $show_web_title,
+		),
+		'injects' => array(
+			'lastpost'
 		)
 	);
 	

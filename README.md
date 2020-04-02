@@ -1,6 +1,6 @@
 # README
 
-playSMS version **1.4.2**
+playSMS version **1.4.4-alpha1**
 
 Official project website:
 
@@ -13,11 +13,7 @@ Official playSMS forum:
 
 ## Description
 
-playSMS is a free and open source SMS management software.
-
-A flexible Web-based mobile portal system that it can be made to fit to various services 
-such as an SMS gateway, bulk SMS provider, personal messaging system, corporate and group 
-communication tools
+playSMS is a free and open source SMS management software, a web interface for SMS gateways and bulk SMS services.
 
 
 ## Feature Highlights
@@ -37,7 +33,7 @@ communication tools
 * SMS poll, manage polling system using SMS, export output in graph, JSON and other formats
 * SMS quiz, serve quizzes on SMS
 * SMS subscribe, manage user subscribes to a service using SMS
-* SMS sync to utilize SMSSync app from http://smssync.ushahidi.com
+* SMS sync to utilize SMSSync app from smssync.ushahidi.com
 * Blacklist, stoplist and firewall plugin for SMS services protections
 * Create your own features, tools, themes and gateway modules as a plugin
 * Supports Gammu, Kannel, SMS Server Tools, Jasmin, Playnet, Uplink, and several SMS service providers
@@ -85,7 +81,7 @@ Please read [INSTALL](INSTALL.md "playSMS installation document") and then [FAQ]
 
 ## Project Founder and Maintainer
 
-* Anton Raharja (http://antonraharja.com)
+* Anton Raharja (https://antonraharja.com)
 
 
 ## Contributors

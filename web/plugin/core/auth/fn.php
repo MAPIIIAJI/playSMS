@@ -28,6 +28,14 @@ defined('_SECURE_') or die('Forbidden');
  * @return boolean TRUE when validated or boolean FALSE when validation failed
  */
 function auth_validate_login($username, $password) {
+
+	// fixme anton - sanitize username
+	if (!($username && $username == core_sanitize_username($username))) {
+		_log('invalid username u:' . $username . ' ip:' . $_SERVER['REMOTE_ADDR'], 2, 'auth_validate_login');
+
+		return FALSE;
+	}
+
 	$uid = user_username2uid($username);
 	_log('login attempt u:' . $username . ' uid:' . $uid . ' p:' . md5($password) . ' ip:' . $_SERVER['REMOTE_ADDR'], 3, 'auth_validate_login');
 	
@@ -159,7 +167,9 @@ function auth_isvalid() {
 	if ($_SESSION['sid'] && $_SESSION['uid'] && $_SESSION['valid']) {
 		$hash = user_session_get('', $_SESSION['sid']);
 		if ($_SESSION['sid'] == $hash[key($hash)]['sid'] && $_SESSION['uid'] == $hash[key($hash)]['uid']) {
-			return acl_checkurl($_SERVER['QUERY_STRING'], $_SESSION['uid']);
+			if ($hash[key($hash)]['http_user_agent'] && ($hash[key($hash)]['http_user_agent'] == core_sanitize_string($_SERVER['HTTP_USER_AGENT']))) {
+				return acl_checkurl($_SERVER['QUERY_STRING'], $_SESSION['uid']);
+			}
 		}
 	}
 	
@@ -255,13 +265,15 @@ function auth_block() {
 }
 
 /**
- * Setup user session
+ * Setup and renew user session
  *
- * @param string $username
- *        Username
+ * @param string $uid
+ *        User ID
  */
 function auth_session_setup($uid) {
 	global $core_config;
+
+	@session_regenerate_id(TRUE);
 	
 	$c_user = user_getdatabyuid($uid);
 	if ($c_user['username']) {
@@ -282,6 +294,23 @@ function auth_session_setup($uid) {
 	}
 }
 
+/**
+ * Destroy user session
+ */
+function auth_session_destroy() {
+	$_SESSION = array();
+
+	if (ini_get('session.use_cookies')) {
+		$params = session_get_cookie_params();
+		setcookie(session_name(), '', time() - 42000,
+			$params['path'], $params['domain'],
+			$params['secure'], $params['httponly']
+		);
+	}
+
+	session_destroy();
+}
+
 function auth_login_as($uid) {
 	
 	// save current login
@@ -299,6 +328,7 @@ function auth_login_return() {
 	
 	// return to previous session
 	auth_session_setup($previous_login);
+	
 }
 
 function auth_login_as_check() {
